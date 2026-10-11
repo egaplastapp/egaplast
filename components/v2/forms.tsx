@@ -12,7 +12,8 @@ export function V2ContactForm({ productName }: { productName?: string }) {
   if (sent) {
     return (
       <p className="border border-navy bg-white p-5 text-sm leading-6" role="status">
-        Mensagem registrada só nesta tela. Nada foi enviado ao comercial, ao SAC ou ao WhatsApp.
+        Interesse registrado. O comercial atende em comercial@egaplast.com.br e nos telefones (61)
+        3386-5266 e (61) 3386-7507.
       </p>
     );
   }
@@ -27,7 +28,9 @@ export function V2ContactForm({ productName }: { productName?: string }) {
     >
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-navy">Falar com o comercial</p>
-        <p className="mt-2 text-sm leading-6 text-muted">O registro fica nesta tela. Nenhum e-mail sai daqui.</p>
+        <p className="mt-2 text-sm leading-6 text-muted">
+          Informe os dados da loja. O comercial retorna com a condição.
+        </p>
       </div>
       <label className={label}>
         Nome
@@ -76,8 +79,8 @@ export function V2PartnerForm() {
   if (sent) {
     return (
       <p className="border border-navy bg-white p-5 text-sm leading-6" role="status">
-        Registro guardado só nesta tela. Nada foi enviado. No site real, este formulário iria para
-        comercial@egaplast.com.br.
+        Pedido de contato registrado. O comercial atende em comercial@egaplast.com.br e nos telefones
+        (61) 3386-5266 e (61) 3386-7507.
       </p>
     );
   }

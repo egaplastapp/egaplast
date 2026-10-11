@@ -22,14 +22,12 @@ export function AddToQuote({ productId, productName }: { productId: string; prod
       </button>
       {added ? (
         <p className="mt-3 text-sm leading-6" role="status">
-          {productName} entrou na lista desta aba. Sem preço e sem reserva.
+          {productName} entrou na cotação. O preço segue sob consulta.
           <Link href="/v2/portal/cotacao" className="ml-2 font-semibold text-navy underline">
-            Revisar a lista
+            Revisar a cotação
           </Link>
         </p>
-      ) : (
-        <p className="mt-3 text-sm text-muted">A lista vive só nesta aba do navegador.</p>
-      )}
+      ) : null}
     </div>
   );
 }

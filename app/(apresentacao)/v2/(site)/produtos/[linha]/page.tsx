@@ -59,19 +59,18 @@ export default async function V2CategoryPage({ params }: { params: Promise<{ lin
                 </div>
               ) : null}
               <div className="flex flex-1 flex-col p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-navy">{product.line}</p>
-              <h2 className="mt-2 text-xl font-bold text-navy">{product.name}</h2>
-              <p className="mt-4 text-sm text-ink">
-                {product.references[0] ? `Ref. ${product.references.join(" / ")}` : "Código pendente"}
-              </p>
-              <p className="mt-2 text-sm font-semibold text-navy">Sob consulta</p>
-              <p className="mt-3 text-xs leading-5 text-muted">Ficha de demonstração. Vigência a confirmar.</p>
-              <Link
-                href={`/v2/produtos/${category.slug}/${product.slug}`}
-                className="mt-6 w-fit border-b border-navy pb-0.5 text-sm font-semibold text-navy"
-              >
-                Abrir ficha
-              </Link>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-navy">{product.line}</p>
+                <h2 className="mt-2 text-xl font-bold text-navy">{product.name}</h2>
+                {product.application ? <p className="mt-3 text-sm leading-6 text-ink">{product.application}</p> : null}
+                <p className="mt-4 text-sm text-ink">
+                  {product.references.length > 0 ? `Ref. ${product.references.join(" / ")}` : "Sob consulta"}
+                </p>
+                <Link
+                  href={`/v2/produtos/${category.slug}/${product.slug}`}
+                  className="mt-6 w-fit rounded-sm bg-navy px-4 py-2.5 text-sm font-semibold text-white"
+                >
+                  Ver ficha
+                </Link>
               </div>
             </article>
           </li>

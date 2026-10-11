@@ -89,17 +89,15 @@ export function V2Footer() {
           </p>
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Contatos publicados</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Contato</p>
           <p className="mt-3 text-sm leading-6">
-            Fixos: +55 61 3386-5266 e +55 61 3386-7507
+            (61) 3386-5266
             <br />
-            SAC: (61) 9871-9098 · sac@egaplast.com.br
+            (61) 3386-7507
             <br />
-            Comercial: comercial@egaplast.com.br
-          </p>
-          <p className="mt-3 text-sm leading-6 text-white/70">
-            A home e a página de contato publicam celulares diferentes. Esta apresentação não abre
-            WhatsApp até a empresa indicar o número oficial.
+            comercial@egaplast.com.br
+            <br />
+            SAC (61) 9871-9098 · sac@egaplast.com.br
           </p>
         </div>
         <div>
@@ -111,13 +109,13 @@ export function V2Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/v2/portal/entrar" className="underline underline-offset-4">
-                Portal de cotação
+              <Link href="/v2/atendimento" className="underline underline-offset-4">
+                Atendimento
               </Link>
             </li>
             <li>
-              <Link href="/" className="underline underline-offset-4">
-                Comparar com a versão 1
+              <Link href="/v2/portal/entrar" className="underline underline-offset-4">
+                Área do lojista
               </Link>
             </li>
           </ul>

@@ -3,11 +3,10 @@ import { PageIntro } from "@/components/v2/public-chrome";
 
 export const metadata = { title: "Para a sua loja" };
 
-const limits = [
-  "Margem, exclusividade de praça ou giro de estoque.",
-  "Prazo de entrega e frete.",
-  "Tabela de preço visível.",
-  "Treinamento ou material além do que já existe no site atual.",
+const steps = [
+  { title: "Quem atende", text: "Loja de materiais, loja hidráulica, distribuidor, home center e representante." },
+  { title: "O que consultar", text: "As linhas, a aplicação e as medidas de cada ficha." },
+  { title: "Como seguir", text: "O comercial apresenta mix e condição. O preço não fica publicado no site." },
 ];
 
 export default function V2PartnerPage() {
@@ -16,19 +15,18 @@ export default function V2PartnerPage() {
       <PageIntro
         kicker="Parceria"
         title="Sua loja revende. O comercial apresenta a condição."
-        lead="Envie o nome da empresa, a cidade e o telefone. Pessoa física não compra por este site. Não há mapa de representantes nem lista de lojas, porque a EGAPLAST ainda não entregou essa base."
+        lead="Informe a empresa, a cidade e o telefone. O atendimento é para quem revende."
       />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 lg:grid-cols-[1fr_0.9fr]">
-        <article>
-          <h2 className="text-xl font-bold text-navy">O que esta página não promete</h2>
-          <ul className="mt-5 grid gap-3">
-            {limits.map((item) => (
-              <li key={item} className="border border-line bg-white px-4 py-3 text-sm leading-6">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </article>
+        <ol className="grid content-start gap-4">
+          {steps.map((step, index) => (
+            <li key={step.title} className="border border-line bg-white p-5">
+              <p className="text-xs font-bold tracking-widest text-navy">{String(index + 1).padStart(2, "0")}</p>
+              <h2 className="mt-2 text-lg font-bold text-navy">{step.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-ink">{step.text}</p>
+            </li>
+          ))}
+        </ol>
         <V2PartnerForm />
       </div>
     </div>

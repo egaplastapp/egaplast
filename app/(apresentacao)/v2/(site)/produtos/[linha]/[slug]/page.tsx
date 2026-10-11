@@ -57,14 +57,9 @@ export default async function V2ProductPage({
           </p>
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-navy">{product.line}</p>
           <h1 className="mt-2 max-w-4xl text-4xl font-extrabold tracking-tight text-navy">{product.name}</h1>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <span className="bg-navy px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
-              Sob consulta
-            </span>
-            <span className="border border-navy px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-navy">
-              Demonstração
-            </span>
-          </div>
+          <p className="mt-5 inline-flex bg-navy px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
+            Sob consulta
+          </p>
         </div>
       </section>
 
@@ -82,25 +77,19 @@ export default async function V2ProductPage({
               />
             </div>
           ) : null}
-          <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-navy">Referência</h2>
           {product.references.length > 0 ? (
-            <p className="mt-2 text-4xl font-extrabold tracking-tight text-navy">{product.references.join(" / ")}</p>
-          ) : (
-            <p className="mt-3 text-lg font-semibold text-navy">Código pendente de confirmação</p>
-          )}
-          <p className="mt-3 text-sm leading-6 text-muted">Nenhum número foi inventado.</p>
-          {product.application ? <p className="mt-6 leading-7 text-ink">{product.application}</p> : null}
-          {product.demonstration ? (
-            <p className="mt-6 border-l-4 border-orange bg-white py-2 pl-4 text-sm leading-6">
-              {product.referenceNote} Fonte: {product.source}.
-            </p>
+            <>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-navy">Referência</h2>
+              <p className="mt-2 text-4xl font-extrabold tracking-tight text-navy">{product.references.join(" / ")}</p>
+            </>
           ) : null}
+          {product.application ? <p className="mt-6 leading-7 text-ink">{product.application}</p> : null}
           <AddToQuote productId={product.id} productName={product.name} />
         </div>
 
         <section className="border border-line bg-white">
           <h2 className="border-b border-line bg-navy px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white">
-            Características publicadas
+            Características
           </h2>
           {product.specs.length > 0 ? (
             <table className="w-full text-sm">
@@ -115,12 +104,11 @@ export default async function V2ProductPage({
             </table>
           ) : (
             <p className="px-5 py-6 leading-7 text-ink">
-              A especificação desta variação ainda não foi confirmada. A ficha não completa a tabela com
-              texto genérico.
+              Para medidas e variações desta peça, fale com o comercial.
             </p>
           )}
           <div className="grid gap-3 border-t border-line px-5 py-4 text-sm leading-6">
-            {product.packaging ? <p>Embalagem publicada: {product.packaging}</p> : null}
+            {product.packaging ? <p>Embalagem: {product.packaging}</p> : null}
             {product.warranty ? <p>Garantia: {product.warranty}</p> : null}
           </div>
         </section>
@@ -132,8 +120,19 @@ export default async function V2ProductPage({
           <ul className="mt-4 grid gap-3 md:grid-cols-2">
             {related.map((item) => (
               <li key={item.id}>
-                <Link href={`/v2/produtos/${linha}/${item.slug}`} className="block border border-line p-4 font-semibold text-navy hover:border-navy">
-                  {item.name}
+                <Link
+                  href={`/v2/produtos/${linha}/${item.slug}`}
+                  className="flex items-center gap-4 border border-line bg-white p-3 font-semibold text-navy hover:border-navy"
+                >
+                  <span className="relative h-16 w-16 shrink-0 bg-[#111]">
+                    {item.imagem ? (
+                      <Image src={item.imagem} alt="" fill sizes="64px" className="object-contain p-1" />
+                    ) : null}
+                  </span>
+                  <span>
+                    <span className="block text-xs font-semibold uppercase tracking-wide text-muted">{item.line}</span>
+                    <span className="mt-1 block">{item.name}</span>
+                  </span>
                 </Link>
               </li>
             ))}
@@ -145,7 +144,8 @@ export default async function V2ProductPage({
         <div>
           <h2 className="text-2xl font-extrabold tracking-tight text-navy">Pedir informação comercial</h2>
           <p className="mt-3 leading-7 text-ink">
-            O formulário não envia a mensagem. Para acompanhar protocolo, use a área do lojista.
+            Informe os dados da loja. O comercial retorna com a condição desta peça. Para montar uma lista,
+            use a área do lojista.
           </p>
         </div>
         <V2ContactForm productName={product.name} />

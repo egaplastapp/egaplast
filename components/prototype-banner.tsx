@@ -13,8 +13,11 @@ function otherVersion(pathname: string) {
 
 export function PrototypeBanner() {
   const pathname = usePathname();
+  const demo = pathname.startsWith("/portal") || pathname.startsWith("/v2/portal");
   const onV2 = pathname === "/v2" || pathname.startsWith("/v2/");
   const other = otherVersion(pathname);
+
+  if (!demo) return null;
 
   return (
     <div className="bg-navy px-4 py-2 text-sm text-white">

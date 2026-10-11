@@ -30,3 +30,49 @@ body {
 .v2-dossier {
   box-shadow: 0 28px 70px rgba(0, 12, 40, 0.35);
 }
+
+.hero-rise {
+  animation: hero-in 0.7s ease both;
+}
+
+.hero-drift {
+  animation: hero-drift 7s ease-in-out 0.9s infinite;
+}
+
+.hero-glow {
+  position: absolute;
+  top: 6%;
+  right: 6%;
+  width: 16rem;
+  height: 16rem;
+  background: radial-gradient(circle, rgba(241, 138, 0, 0.42), transparent 68%);
+  pointer-events: none;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .hero-drift {
+    animation: none;
+  }
+}

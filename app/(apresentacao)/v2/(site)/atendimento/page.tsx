@@ -6,7 +6,7 @@ export const metadata = { title: "Atendimento" };
 const channels = [
   {
     title: "Cotação e parceria",
-    text: "comercial@egaplast.com.br. O celular da home e o da página de contato não coincidem, então esta apresentação não escolhe um WhatsApp.",
+    text: "comercial@egaplast.com.br · (61) 3386-5266 e (61) 3386-7507.",
   },
   {
     title: "SAC",
@@ -14,11 +14,11 @@ const channels = [
   },
   {
     title: "Assistência",
-    text: "A página atual de assistência só tem o título. Até existir um fluxo próprio, o assunto fica com o SAC.",
+    text: "A assistência técnica é atendida pelo SAC.",
   },
   {
     title: "Arquivos de marca",
-    text: "Telefone de marketing publicado: +55 61 99643-3078.",
+    text: "Marketing: +55 61 99643-3078.",
   },
 ];
 
@@ -27,15 +27,14 @@ export default function V2ContactPage() {
     <div>
       <PageIntro
         kicker="Atendimento"
-        title="Um caminho claro para cada assunto."
-        lead="Cotação, parceria, SAC e arquivos de marca. O formulário confirma só nesta tela."
+        title="Um caminho para cada assunto."
+        lead="Cotação, parceria e assistência. Informe os dados da loja para o comercial retornar."
       />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 lg:grid-cols-[0.85fr_1.15fr]">
-        <ul className="grid gap-4 content-start">
-          {channels.map((channel, index) => (
+        <ul className="grid content-start gap-4">
+          {channels.map((channel) => (
             <li key={channel.title} className="border border-line bg-white p-5">
-              <p className="text-xs font-bold tracking-widest text-navy">{String(index + 1).padStart(2, "0")}</p>
-              <h2 className="mt-2 font-bold text-navy">{channel.title}</h2>
+              <h2 className="font-bold text-navy">{channel.title}</h2>
               <p className="mt-2 text-sm leading-6 text-ink">{channel.text}</p>
             </li>
           ))}

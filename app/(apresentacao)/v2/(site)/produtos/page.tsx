@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PageIntro } from "@/components/v2/public-chrome";
-import { categories, productsByCategory } from "@/lib/catalogo";
+import { categories } from "@/lib/catalogo";
 
 export const metadata = { title: "Produtos" };
 
@@ -11,11 +11,10 @@ export default function V2ProductsPage() {
       <PageIntro
         kicker="Catálogo"
         title="Linhas para consultar a referência."
-        lead="O preço fica sob consulta. Códigos e medidas só aparecem quando já estavam publicados no guia ou no índice do site."
+        lead="Sete linhas hidrossanitárias. O preço fica sob consulta."
       />
       <ul className="mx-auto grid max-w-6xl gap-4 px-4 py-12">
         {categories.map((category, index) => {
-          const count = productsByCategory(category.id).length;
           return (
             <li key={category.id}>
               <Link
@@ -35,7 +34,7 @@ export default function V2ProductsPage() {
                   <span className="block text-lg font-bold text-navy">{category.name}</span>
                   <span className="mt-1 block text-sm leading-6 text-ink">{category.application}</span>
                 </span>
-                <span className="text-sm font-semibold text-navy">{count} fichas de exemplo</span>
+                <span className="text-sm font-semibold text-navy">Ver a linha</span>
               </Link>
             </li>
           );

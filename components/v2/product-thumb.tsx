@@ -14,16 +14,7 @@ export function ProductThumb({ product }: { product?: Product }) {
     );
   }
 
-  const label = product?.references[0] ?? "Sem foto";
-
-  return (
-    <span
-      aria-hidden="true"
-      className="flex h-[72px] w-[72px] shrink-0 items-center justify-center border border-line bg-[#f3f6fb] px-1 text-center text-[11px] font-bold leading-tight text-navy"
-    >
-      {label}
-    </span>
-  );
+  return <span aria-hidden="true" className="h-[72px] w-[72px] shrink-0 border border-line bg-[#f3f6fb]" />;
 }
 
 export function PriceNotice() {

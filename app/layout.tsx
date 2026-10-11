@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | EGAPLAST",
   },
   description:
-    "Protótipo do site institucional da EGAPLAST para lojas, distribuidores e representantes. Preços sob consulta.",
+    "Fabricante de mecanismos para caixa acoplada e produtos hidrossanitários, em Brasília, desde 1999. Condição comercial sob consulta.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
