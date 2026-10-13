@@ -80,12 +80,12 @@ export default async function ProductPage({
       <section>
         <h2 className="text-xl font-bold text-navy">Características publicadas</h2>
         {product.specs.length > 0 ? (
-          <table className="mt-3 w-full max-w-3xl border-collapse text-sm">
+          <table className="mt-3 w-full max-w-3xl table-fixed border-collapse text-sm">
             <tbody>
               {product.specs.map((spec) => (
                 <tr key={spec.label} className="border-b border-line">
-                  <th className="py-2 pr-4 text-left font-semibold text-navy">{spec.label}</th>
-                  <td className="py-2">{spec.value}</td>
+                  <th className="w-2/5 break-words py-2 pr-4 text-left font-semibold text-navy">{spec.label}</th>
+                  <td className="break-words py-2">{spec.value}</td>
                 </tr>
               ))}
             </tbody>

@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { categories, products, productsByCategory } from "@/lib/catalogo";
+import { categories } from "@/lib/catalogo";
 import { formatBRL, referenceLabel } from "@/lib/preco";
 import { useDemo } from "@/lib/demo-store";
-import { PriceNotice, ProductThumb } from "@/components/v2/product-thumb";
+import { PriceNotice, ProductFrame } from "@/components/v2/product-thumb";
+import { QuantityStepper } from "@/components/v2/quantity-stepper";
 
 export default function V2PortalCatalogPage() {
-  const { role, addItem, draft } = useDemo();
-  const [notice, setNotice] = useState("");
+  const { role, addItem, setQuantity, draft, catalog } = useDemo();
   const [query, setQuery] = useState("");
   const [line, setLine] = useState("todas");
 
@@ -19,13 +19,13 @@ export default function V2PortalCatalogPage() {
       .filter((category) => line === "todas" || category.id === line)
       .map((category) => ({
         category,
-        items: productsByCategory(category.id).filter((product) => {
+        items: catalog.filter((product) => product.categoryId === category.id).filter((product) => {
           const blob = `${product.name} ${product.line} ${product.references.join(" ")}`.toLowerCase();
           return blob.includes(term);
         }),
       }))
       .filter((group) => group.items.length > 0);
-  }, [line, query]);
+  }, [catalog, line, query]);
 
   if (role !== "lojista" && role !== "comercial") return null;
 
@@ -39,7 +39,7 @@ export default function V2PortalCatalogPage() {
             Os mesmos produtos da área pública. Incluir um item não reserva estoque e não confirma venda.
           </p>
         </div>
-        <Link href="/v2/portal/cotacao" className="rounded-sm bg-navy px-4 py-2.5 text-sm font-semibold text-white">
+        <Link href="/v2/portal/cotacao" className="w-full rounded-sm bg-navy px-4 py-2.5 text-center text-sm font-semibold text-white sm:w-auto">
           Lista {draft.length > 0 ? `(${draft.length})` : ""}
         </Link>
       </div>
@@ -71,50 +71,47 @@ export default function V2PortalCatalogPage() {
         </label>
       </div>
 
-      {notice ? (
-        <p className="mt-4 border border-navy bg-white px-4 py-3 text-sm" role="status">
-          {notice}{" "}
-          <Link href="/v2/portal/cotacao" className="font-semibold text-navy underline">
-            Abrir a lista
-          </Link>
-        </p>
-      ) : null}
-
       <div className="mt-8 grid gap-8">
         {visibleCategories.map(({ category, items }) => (
           <section key={category.id}>
             <h2 className="text-lg font-bold text-navy">{category.name}</h2>
-            <ul className="mt-3 grid gap-3">
+            <ul className="mt-3 grid gap-4 sm:grid-cols-2">
               {items.map((product) => {
-                const inDraft = draft.some((item) => item.productId === product.id);
+                const draftLine = draft.find((item) => item.productId === product.id);
+                const lineTotal = draftLine ? product.precoDemonstracao * draftLine.quantity : 0;
+                const href = `/v2/portal/produto/${product.id}`;
                 return (
-                  <li key={product.id} className="flex flex-wrap items-center justify-between gap-4 border border-line bg-white p-4">
-                    <span className="flex min-w-0 items-center gap-4">
-                      <ProductThumb product={product} />
-                      <span>
-                        <span className="block font-semibold text-navy">{product.name}</span>
-                        <span className="mt-1 block text-sm text-muted">
-                          {referenceLabel(product)}
-                        </span>
-                        <span className="mt-1 block text-sm font-semibold text-navy">
-                          {formatBRL(product.precoDemonstracao)}
-                        </span>
-                      </span>
-                    </span>
-                    <button
-                      type="button"
-                      className="rounded-sm bg-navy px-4 py-2 text-sm font-semibold text-white"
-                      onClick={() => {
-                        addItem(product.id);
-                        setNotice(
-                          inDraft
-                            ? `${product.name}: a quantidade na lista aumentou.`
-                            : `${product.name} entrou na lista de cotação.`,
-                        );
-                      }}
-                    >
-                      {inDraft ? "Somar quantidade" : "Incluir"}
-                    </button>
+                  <li key={product.id} className="flex flex-col border border-line bg-white">
+                    <Link href={href} className="block">
+                      <ProductFrame product={product} alt="" />
+                    </Link>
+                    <div className="grid flex-1 gap-3 p-4">
+                      <div className="min-w-0">
+                        <Link href={href} className="block font-semibold text-navy hover:underline">
+                          {product.name}
+                        </Link>
+                        <p className="mt-1 text-sm text-muted">{referenceLabel(product)}</p>
+                        <p className="mt-1 text-sm text-ink">{formatBRL(product.precoDemonstracao)} cada</p>
+                        {draftLine ? (
+                          <p className="mt-1 text-base font-extrabold text-navy">{formatBRL(lineTotal)}</p>
+                        ) : null}
+                      </div>
+                      {draftLine ? (
+                        <QuantityStepper
+                          name={product.name}
+                          quantity={draftLine.quantity}
+                          onChange={(quantity) => setQuantity(product.id, quantity)}
+                        />
+                      ) : (
+                        <button
+                          type="button"
+                          className="w-full rounded-sm bg-navy px-4 py-2.5 text-sm font-semibold text-white"
+                          onClick={() => addItem(product.id)}
+                        >
+                          Adicionar
+                        </button>
+                      )}
+                    </div>
                   </li>
                 );
               })}
@@ -125,7 +122,7 @@ export default function V2PortalCatalogPage() {
           <p className="border border-line bg-white p-4 text-sm">Nenhuma ficha corresponde a esta busca.</p>
         ) : null}
       </div>
-      <p className="mt-6 text-xs text-muted">{products.length} fichas de demonstração.</p>
+      <p className="mt-6 text-xs text-muted">{catalog.length} fichas de demonstração.</p>
     </div>
   );
 }

@@ -20,8 +20,8 @@ export function PrototypeBanner() {
   if (!demo) return null;
 
   return (
-    <div className="bg-navy px-4 py-2 text-sm text-white">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-2">
+    <div className="bg-navy px-4 py-2 text-xs text-white sm:text-sm">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
         <p>
           Protótipo para avaliação do diretor. Os dados são ilustrativos, o preço não é exibido e nenhum
           pedido é confirmado.

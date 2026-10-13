@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const field = "w-full border border-line bg-white px-3 py-2.5 text-sm font-normal text-ink";
+const field = "w-full border border-line bg-white px-3 py-2.5 text-base font-normal text-ink sm:text-sm";
 const label = "grid gap-1.5 text-sm font-semibold text-navy";
 
 export function V2ContactForm({ productName }: { productName?: string }) {

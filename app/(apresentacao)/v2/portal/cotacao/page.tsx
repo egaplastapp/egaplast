@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { productById } from "@/lib/catalogo";
 import { formatBRL, itemTotal, itemsTotal, referenceLabel } from "@/lib/preco";
-import { DEMO_COMPANY } from "@/lib/types";
 import { useDemo } from "@/lib/demo-store";
 import { PriceNotice, ProductThumb } from "@/components/v2/product-thumb";
+import { QuantityStepper } from "@/components/v2/quantity-stepper";
 
 export default function V2QuotePage() {
   const {
@@ -18,7 +17,12 @@ export default function V2QuotePage() {
     setItemNote,
     removeItem,
     submitDraft,
+    catalog,
+    stores,
+    currentStoreId,
   } = useDemo();
+  const store = stores.find((item) => item.id === currentStoreId) ?? null;
+  const findProduct = (id: string) => catalog.find((product) => product.id === id);
   const [protocol, setProtocol] = useState<string | null>(null);
   const [estimate, setEstimate] = useState(0);
 
@@ -26,9 +30,9 @@ export default function V2QuotePage() {
 
   if (protocol) {
     return (
-      <section className="mx-auto max-w-2xl border-t-4 border-orange bg-white p-8 shadow-[0_20px_50px_rgba(0,31,87,0.08)]">
+      <section className="mx-auto max-w-2xl border-t-4 border-orange bg-white p-5 shadow-[0_20px_50px_rgba(0,31,87,0.08)] sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-navy">Pré-pedido</p>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-navy">{protocol}</h1>
+        <h1 className="mt-3 break-words text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">{protocol}</h1>
         <p className="mt-2 text-sm font-semibold text-navy">Status inicial: enviado</p>
         <p className="mt-4 text-2xl font-extrabold tracking-tight text-navy">{formatBRL(estimate)}</p>
         <p className="mt-4 leading-7 text-ink">
@@ -48,7 +52,7 @@ export default function V2QuotePage() {
   }
 
   const units = draft.reduce((sum, item) => sum + item.quantity, 0);
-  const total = itemsTotal(draft);
+  const total = itemsTotal(draft, findProduct);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
@@ -72,15 +76,15 @@ export default function V2QuotePage() {
         ) : (
           <ul className="mt-6 grid gap-4">
             {draft.map((item) => {
-              const product = productById(item.productId);
+              const product = findProduct(item.productId);
               return (
-                <li key={item.productId} className="border border-line bg-white p-5">
-                  <div className="flex items-start gap-4">
-                    <ProductThumb product={product} />
+                <li key={item.productId} className="border border-line bg-white p-4 sm:p-5">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <ProductThumb product={product} size="lg" />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <h2 className="font-bold text-navy">{product?.name ?? "Item"}</h2>
+                          <h2 className="font-bold text-navy">{product?.name ?? "Item removido do catálogo"}</h2>
                           <p className="mt-1 text-sm text-muted">
                             {referenceLabel(product)}
                           </p>
@@ -89,7 +93,7 @@ export default function V2QuotePage() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-navy">{formatBRL(itemTotal(item))}</p>
+                          <p className="font-bold text-navy">{formatBRL(itemTotal(item, product ?? null))}</p>
                           <button
                             type="button"
                             className="mt-2 text-sm font-semibold text-navy underline"
@@ -102,34 +106,15 @@ export default function V2QuotePage() {
                       <div className="mt-4 flex flex-wrap items-end gap-4">
                         <div>
                           <p className="text-sm font-semibold text-navy">Quantidade</p>
-                          <div className="mt-1 inline-flex items-center border border-line">
-                            <button
-                              type="button"
-                              className="px-3 py-2 font-semibold text-navy"
-                              aria-label={`Diminuir quantidade de ${product?.name ?? "item"}`}
-                              onClick={() => setQuantity(item.productId, item.quantity - 1)}
-                            >
-                              −
-                            </button>
-                            <input
-                              type="number"
-                              min={1}
-                              value={item.quantity}
-                              aria-label="Quantidade"
-                              onChange={(event) => setQuantity(item.productId, Number(event.target.value))}
-                              className="w-16 border-x border-line py-2 text-center"
+                          <div className="mt-1">
+                            <QuantityStepper
+                              name={product?.name ?? "item"}
+                              quantity={item.quantity}
+                              onChange={(quantity) => setQuantity(item.productId, quantity)}
                             />
-                            <button
-                              type="button"
-                              className="px-3 py-2 font-semibold text-navy"
-                              aria-label={`Aumentar quantidade de ${product?.name ?? "item"}`}
-                              onClick={() => setQuantity(item.productId, item.quantity + 1)}
-                            >
-                              +
-                            </button>
                           </div>
                         </div>
-                        <label className="grid min-w-56 flex-1 gap-1 text-sm font-semibold text-navy">
+                        <label className="grid w-full min-w-0 gap-1 text-sm font-semibold text-navy sm:w-auto sm:min-w-56 sm:flex-1">
                           Observação do item
                           <input
                             value={item.note}
@@ -149,11 +134,21 @@ export default function V2QuotePage() {
 
       <aside className="h-fit border border-line bg-white p-5 lg:sticky lg:top-4">
         <h2 className="text-lg font-bold text-navy">Resumo</h2>
-        <p className="mt-4 text-sm font-semibold text-navy">{DEMO_COMPANY.name}</p>
-        <p className="text-sm text-ink">
-          {DEMO_COMPANY.city} - {DEMO_COMPANY.state} · {DEMO_COMPANY.phone}
-        </p>
-        <p className="mt-2 text-xs leading-5 text-muted">{DEMO_COMPANY.note}</p>
+        {store ? (
+          <>
+            <p className="mt-4 text-sm font-semibold text-navy">{store.tradeName}</p>
+            <p className="text-sm text-ink">
+              {store.city} - {store.state} · {store.whatsapp}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-muted">
+              {store.seeded
+                ? "Empresa fictícia, usada só nesta demonstração. Não é um cliente da EGAPLAST."
+                : "Cadastro desta sessão. Recarregar apaga a loja."}
+            </p>
+          </>
+        ) : (
+          <p className="mt-4 text-sm text-ink">Nenhuma loja vinculada a este carrinho.</p>
+        )}
         <p className="mt-4 border-t border-line pt-4 text-sm">
           {draft.length} {draft.length === 1 ? "item" : "itens"} · {units}{" "}
           {units === 1 ? "unidade" : "unidades"}
@@ -171,10 +166,10 @@ export default function V2QuotePage() {
         </label>
         <button
           type="button"
-          disabled={draft.length === 0}
+          disabled={draft.length === 0 || (role === "lojista" && store?.status !== "ativo")}
           className="mt-4 w-full rounded-sm bg-navy px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
           onClick={() => {
-            const snapshot = itemsTotal(draft);
+            const snapshot = itemsTotal(draft, findProduct);
             const order = submitDraft();
             if (order) {
               setEstimate(snapshot);

@@ -13,11 +13,17 @@ export function referenceLabel(product?: Product) {
   return `Ref. ${product.references.join(" / ")}`;
 }
 
-export function itemTotal(item: PreOrderItem) {
-  const price = productById(item.productId)?.precoDemonstracao ?? 0;
-  return price * item.quantity;
+export function itemTotal(item: PreOrderItem, product?: Product | null) {
+  const resolved = product === undefined ? productById(item.productId) : product;
+  return (resolved?.precoDemonstracao ?? 0) * item.quantity;
 }
 
-export function itemsTotal(items: PreOrderItem[]) {
-  return items.reduce((sum, item) => sum + itemTotal(item), 0);
+export function itemsTotal(
+  items: PreOrderItem[],
+  resolve?: (productId: string) => Product | undefined,
+) {
+  return items.reduce((sum, item) => {
+    if (!resolve) return sum + itemTotal(item);
+    return sum + itemTotal(item, resolve(item.productId) ?? null);
+  }, 0);
 }

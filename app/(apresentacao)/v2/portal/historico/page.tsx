@@ -1,6 +1,5 @@
 "use client";
 
-import { productById } from "@/lib/catalogo";
 import { formatBRL, itemTotal, itemsTotal, referenceLabel } from "@/lib/preco";
 import { STATUS_LABEL, type PreOrder, type PreOrderStatus } from "@/lib/types";
 import { useDemo } from "@/lib/demo-store";
@@ -18,6 +17,8 @@ const pipeline: PreOrderStatus[] = [
 ];
 
 function OrderCard({ order }: { order: PreOrder }) {
+  const { catalog } = useDemo();
+  const findProduct = (id: string) => catalog.find((product) => product.id === id);
   return (
     <li className="border border-line bg-white p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -37,23 +38,23 @@ function OrderCard({ order }: { order: PreOrder }) {
       </p>
       <ul className="mt-4 grid gap-3 text-sm">
         {order.items.map((item) => {
-          const product = productById(item.productId);
+          const product = findProduct(item.productId);
           return (
-            <li key={item.productId} className="flex items-center gap-3 border-t border-line pt-3">
+            <li key={item.productId} className="flex flex-wrap items-center gap-3 border-t border-line pt-3">
               <ProductThumb product={product} />
               <span className="min-w-0 flex-1">
                 <span className="block font-semibold text-navy">
-                  {item.quantity} × {product?.name ?? "Item"}
+                  {product ? `${item.quantity} × ${product.name}` : "Item removido do catálogo"}
                 </span>
-                <span className="text-muted">{referenceLabel(product)}</span>
+                {product ? <span className="text-muted">{referenceLabel(product)}</span> : null}
                 {item.note ? <span className="block text-muted">{item.note}</span> : null}
               </span>
-              <span className="font-semibold text-navy">{formatBRL(itemTotal(item))}</span>
+              <span className="ml-auto font-semibold text-navy">{formatBRL(itemTotal(item, product ?? null))}</span>
             </li>
           );
         })}
       </ul>
-      <p className="mt-3 text-right text-sm font-bold text-navy">Estimativa {formatBRL(itemsTotal(order.items))}</p>
+      <p className="mt-3 text-right text-sm font-bold text-navy">Estimativa {formatBRL(itemsTotal(order.items, findProduct))}</p>
       {order.observation ? <p className="mt-3 text-sm leading-6 text-ink">{order.observation}</p> : null}
       <ol className="mt-5 border-l border-line pl-4">
         {order.history.map((change) => (
@@ -71,25 +72,29 @@ function OrderCard({ order }: { order: PreOrder }) {
 }
 
 export default function V2HistoryPage() {
-  const { role, orders } = useDemo();
+  const { role, orders, stores, currentStoreId } = useDemo();
   if (!role) return null;
-  const preOrders = orders.filter((order) => !order.numeroPedido);
-  const pedidos = orders.filter((order) => order.numeroPedido);
+  const currentStore = stores.find((store) => store.id === currentStoreId) ?? null;
+  const visible =
+    role === "lojista" && currentStore ? orders.filter((order) => order.storeId === currentStore.id) : orders;
+  const preOrders = visible.filter((order) => !order.numeroPedido);
+  const pedidos = visible.filter((order) => order.numeroPedido);
 
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-navy">Acompanhamento</p>
       <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-navy">Histórico</h1>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-ink">
-        Dois protocolos de exemplo já estão na lista. Os que você enviar nesta aba entram junto. O
-        número de pedido só aparece depois que o comercial aprovar e converter. Tudo some ao recarregar.
+        {role === "lojista"
+          ? "Aqui ficam só os pré-pedidos desta loja. O número de pedido só aparece depois que o comercial aprovar e converter. Tudo some ao recarregar."
+          : "A lista mostra os exemplos e o que as lojas enviarem nesta sessão. O número de pedido só aparece depois da conversão. Tudo some ao recarregar."}
       </p>
       <div className="mt-4">
         <PriceNotice />
       </div>
       <ul className="mt-6 flex flex-wrap gap-2">
         {pipeline.map((status) => {
-          const count = orders.filter((order) => order.status === status).length;
+          const count = visible.filter((order) => order.status === status).length;
           return (
             <li key={status} className="flex items-center gap-2 border border-line bg-white px-3 py-2 text-sm">
               <StatusPill status={status} />

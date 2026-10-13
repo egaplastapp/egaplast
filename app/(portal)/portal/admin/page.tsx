@@ -66,7 +66,7 @@ export default function AdminPage() {
                   ))}
                 </select>
               </label>
-              <label className="grid min-w-64 flex-1 gap-1 text-sm font-semibold text-navy">
+              <label className="grid w-full min-w-0 flex-1 gap-1 text-sm font-semibold text-navy">
                 Nota
                 <input name="note" className="border border-line px-2 py-2 font-normal" />
               </label>

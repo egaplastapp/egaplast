@@ -33,7 +33,7 @@ export default async function V2CategoryPage({ params }: { params: Promise<{ lin
               Produtos
             </Link>
           </p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-extrabold tracking-tight text-navy">{category.name}</h1>
+          <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">{category.name}</h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-ink">{category.application}</p>
           {category.imagem ? (
             <div className="relative mt-8 h-72 overflow-hidden bg-[#111] md:h-96">

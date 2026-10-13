@@ -72,6 +72,35 @@ export type PreOrder = {
   seeded: boolean;
   /** Preenchido só quando o comercial aprova e converte. */
   numeroPedido: string | null;
+  /** Loja da sessão que enviou. Nulo quando a v1 envia sem cadastro. */
+  storeId: string | null;
+};
+
+export type StoreStatus = "ativo" | "inativo";
+
+export type StoreKind =
+  | "construcao"
+  | "hidraulica"
+  | "home_center"
+  | "distribuidor"
+  | "representante";
+
+export type RetailStore = {
+  id: string;
+  tradeName: string;
+  cnpj: string;
+  city: string;
+  state: string;
+  buyerName: string;
+  whatsapp: string;
+  email: string;
+  kind: StoreKind;
+  /** Ids das categorias já existentes no catálogo. */
+  interests: string[];
+  status: StoreStatus;
+  /** Loja fictícia da demonstração. Não é cliente da EGAPLAST. */
+  seeded: boolean;
+  createdAt: string;
 };
 
 export type DemoRole = "lojista" | "comercial";

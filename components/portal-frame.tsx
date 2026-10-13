@@ -31,28 +31,28 @@ export function PortalFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen">
       <header className="border-b border-line">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-4">
-          <Link href="/" className="mr-auto">
-            <Image src="/logo-egaplast.svg" alt="EGAPLAST" width={124} height={40} />
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-3 px-4 py-4">
+          <Link href="/" className="shrink-0">
+            <Image src="/logo-egaplast.svg" alt="EGAPLAST" width={124} height={40} className="h-9 w-auto" />
           </Link>
           {role ? (
-            <nav aria-label="Portal" className="flex flex-wrap gap-4 text-sm font-semibold text-navy">
+            <nav aria-label="Portal" className="order-last flex w-full gap-x-4 gap-y-2 overflow-x-auto text-sm font-semibold text-navy sm:order-none sm:w-auto sm:flex-wrap">
               {links.map((link) => (
-                <Link key={link.href} href={link.href} className="hover:underline">
+                <Link key={link.href} href={link.href} className="shrink-0 py-1 hover:underline">
                   {link.label}
                   {link.href === "/portal/cotacao" && draft.length > 0 ? ` (${draft.length})` : ""}
                 </Link>
               ))}
               {role === "comercial" ? (
-                <Link href="/portal/admin" className="hover:underline">
+                <Link href="/portal/admin" className="shrink-0 py-1 hover:underline">
                   Painel
                 </Link>
               ) : null}
             </nav>
           ) : null}
           {role ? (
-            <button type="button" onClick={leave} className="text-sm font-semibold text-navy underline">
-              Sair da demonstração
+            <button type="button" onClick={leave} className="ml-auto text-sm font-semibold text-navy underline">
+              Sair
             </button>
           ) : null}
         </div>

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { productById } from "@/lib/catalogo";
 import { formatBRL, itemTotal, itemsTotal, referenceLabel } from "@/lib/preco";
 import { STATUS_LABEL, type PreOrder, type PreOrderStatus } from "@/lib/types";
 import { useDemo } from "@/lib/demo-store";
@@ -13,7 +12,8 @@ const statuses = Object.keys(STATUS_LABEL) as PreOrderStatus[];
 const highlights: PreOrderStatus[] = ["enviado", "em_analise", "aguardando_informacoes", "aprovado"];
 
 export default function V2AdminPage() {
-  const { role, orders, updateStatus } = useDemo();
+  const { role, orders, updateStatus, catalog, stores } = useDemo();
+  const findProduct = (id: string) => catalog.find((product) => product.id === id);
   const [selectedId, setSelectedId] = useState(orders[0]?.id ?? "");
   const selected = orders.find((order) => order.id === selectedId) ?? orders[0];
 
@@ -62,12 +62,14 @@ export default function V2AdminPage() {
             orders={orders.filter((order) => !order.numeroPedido)}
             selectedId={selected?.id}
             onSelect={setSelectedId}
+            stores={stores}
           />
           <OrderGroup
             title="Pedidos"
             orders={orders.filter((order) => order.numeroPedido)}
             selectedId={selected?.id}
             onSelect={setSelectedId}
+            stores={stores}
           />
         </div>
 
@@ -76,6 +78,9 @@ export default function V2AdminPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="text-2xl font-extrabold tracking-tight text-navy">{selected.protocol}</h2>
+                <p className="mt-1 text-sm text-ink">
+                  {stores.find((store) => store.id === selected.storeId)?.tradeName ?? "Loja não identificada"}
+                </p>
                 {selected.numeroPedido ? (
                   <p className="mt-1 text-sm font-semibold text-navy">Pedido {selected.numeroPedido}</p>
                 ) : (
@@ -90,30 +95,30 @@ export default function V2AdminPage() {
             </p>
             <ul className="mt-4 text-sm">
               {selected.items.map((item) => {
-                const product = productById(item.productId);
+                const product = findProduct(item.productId);
                 return (
-                  <li key={item.productId} className="flex items-center gap-3 border-t border-line py-3">
+                  <li key={item.productId} className="flex flex-wrap items-center gap-3 border-t border-line py-3">
                     <ProductThumb product={product} />
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold text-navy">
-                        {item.quantity} × {product?.name ?? "Item"}
+                        {product ? `${item.quantity} × ${product.name}` : "Item removido do catálogo"}
                       </span>
-                      <span className="text-muted">{referenceLabel(product)}</span>
+                      {product ? <span className="text-muted">{referenceLabel(product)}</span> : null}
                       {item.note ? <span className="block text-muted">{item.note}</span> : null}
                     </span>
-                    <span className="font-semibold text-navy">{formatBRL(itemTotal(item))}</span>
+                    <span className="ml-auto shrink-0 font-semibold text-navy">{formatBRL(itemTotal(item, product ?? null))}</span>
                   </li>
                 );
               })}
             </ul>
             <p className="mt-2 text-right text-sm font-bold text-navy">
-              Estimativa {formatBRL(itemsTotal(selected.items))}
+              Estimativa {formatBRL(itemsTotal(selected.items, findProduct))}
             </p>
             {selected.observation ? <p className="mt-3 text-sm leading-6">{selected.observation}</p> : null}
             <button
               type="button"
               disabled={Boolean(selected.numeroPedido)}
-              className="mt-4 rounded-sm bg-navy px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
+              className="mt-4 w-full rounded-sm bg-navy px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40 sm:w-auto"
               onClick={() => updateStatus(selected.id, "aprovado", "")}
             >
               {selected.numeroPedido ? `Pedido ${selected.numeroPedido}` : "Aprovar e converter em pedido"}
@@ -172,11 +177,13 @@ function OrderGroup({
   orders,
   selectedId,
   onSelect,
+  stores,
 }: {
   title: string;
   orders: PreOrder[];
   selectedId?: string;
   onSelect: (id: string) => void;
+  stores: { id: string; tradeName: string }[];
 }) {
   return (
     <section>
@@ -187,6 +194,7 @@ function OrderGroup({
         <ul className="mt-2 grid gap-2">
           {orders.map((order) => {
             const active = order.id === selectedId;
+            const storeName = stores.find((store) => store.id === order.storeId)?.tradeName ?? "Loja não identificada";
             return (
               <li key={order.id}>
                 <button
@@ -195,6 +203,7 @@ function OrderGroup({
                   className={`w-full border p-3 text-left ${active ? "border-navy bg-white" : "border-line bg-white/70"}`}
                 >
                   <span className="block font-bold text-navy">{order.protocol}</span>
+                  <span className="mt-1 block text-xs text-ink">{storeName}</span>
                   {order.numeroPedido ? (
                     <span className="mt-1 block text-xs font-semibold text-navy">{order.numeroPedido}</span>
                   ) : null}

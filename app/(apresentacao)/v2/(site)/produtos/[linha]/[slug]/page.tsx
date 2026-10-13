@@ -40,8 +40,22 @@ export default async function V2ProductPage({
 
   return (
     <article>
-      <section className="border-b border-line bg-[#f3f6fb]">
-        <div className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-2 lg:py-12">
+        {product.imagem ? (
+          <div className="relative aspect-square bg-[#111]">
+            <Image
+              src={product.imagem}
+              alt={product.name}
+              fill
+              priority
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-contain"
+            />
+          </div>
+        ) : (
+          <div aria-hidden="true" className="aspect-square border border-line bg-[#f3f6fb]" />
+        )}
+        <div>
           <p className="text-sm text-navy">
             <Link href="/v2/produtos" className="font-semibold underline">
               Produtos
@@ -56,61 +70,46 @@ export default async function V2ProductPage({
             ) : null}
           </p>
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-navy">{product.line}</p>
-          <h1 className="mt-2 max-w-4xl text-4xl font-extrabold tracking-tight text-navy">{product.name}</h1>
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">{product.name}</h1>
+          {product.references.length > 0 ? (
+            <p className="mt-3 break-words text-lg font-semibold text-navy">Ref. {product.references.join(" / ")}</p>
+          ) : null}
           <p className="mt-5 inline-flex bg-navy px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
             Sob consulta
           </p>
-        </div>
-      </section>
-
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 lg:grid-cols-[0.9fr_1.1fr]">
-        <div>
-          {product.imagem ? (
-            <div className="relative mb-8 aspect-square bg-[#111]">
-              <Image
-                src={product.imagem}
-                alt={product.name}
-                fill
-                priority
-                sizes="(min-width: 1024px) 40vw, 100vw"
-                className="object-contain"
-              />
-            </div>
-          ) : null}
-          {product.references.length > 0 ? (
-            <>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-navy">Referência</h2>
-              <p className="mt-2 text-4xl font-extrabold tracking-tight text-navy">{product.references.join(" / ")}</p>
-            </>
-          ) : null}
-          {product.application ? <p className="mt-6 leading-7 text-ink">{product.application}</p> : null}
           <AddToQuote productId={product.id} productName={product.name} />
         </div>
+      </div>
 
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 pb-12 lg:grid-cols-2">
+        <section>
+          <h2 className="text-lg font-bold text-navy">Sobre o produto</h2>
+          <p className="mt-3 leading-7 text-ink">
+            {product.application ?? "Para a aplicação desta peça, fale com o comercial."}
+          </p>
+          <div className="mt-4 grid gap-2 text-sm leading-6">
+            {product.packaging ? <p>Embalagem: {product.packaging}</p> : null}
+            {product.warranty ? <p>Garantia: {product.warranty}</p> : null}
+          </div>
+        </section>
         <section className="border border-line bg-white">
           <h2 className="border-b border-line bg-navy px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white">
-            Características
+            Ficha técnica
           </h2>
           {product.specs.length > 0 ? (
-            <table className="w-full text-sm">
+            <table className="w-full table-fixed text-sm">
               <tbody>
                 {product.specs.map((spec) => (
                   <tr key={spec.label} className="border-b border-line last:border-0">
-                    <th className="w-2/5 px-5 py-3 text-left font-semibold text-navy">{spec.label}</th>
-                    <td className="px-5 py-3">{spec.value}</td>
+                    <th className="w-2/5 break-words px-3 py-3 text-left font-semibold text-navy sm:px-5">{spec.label}</th>
+                    <td className="break-words px-3 py-3 sm:px-5">{spec.value}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <p className="px-5 py-6 leading-7 text-ink">
-              Para medidas e variações desta peça, fale com o comercial.
-            </p>
+            <p className="px-5 py-6 leading-7 text-ink">Para medidas e variações desta peça, fale com o comercial.</p>
           )}
-          <div className="grid gap-3 border-t border-line px-5 py-4 text-sm leading-6">
-            {product.packaging ? <p>Embalagem: {product.packaging}</p> : null}
-            {product.warranty ? <p>Garantia: {product.warranty}</p> : null}
-          </div>
         </section>
       </div>
 
@@ -129,9 +128,9 @@ export default async function V2ProductPage({
                       <Image src={item.imagem} alt="" fill sizes="64px" className="object-contain p-1" />
                     ) : null}
                   </span>
-                  <span>
+                  <span className="min-w-0">
                     <span className="block text-xs font-semibold uppercase tracking-wide text-muted">{item.line}</span>
-                    <span className="mt-1 block">{item.name}</span>
+                    <span className="mt-1 block break-words">{item.name}</span>
                   </span>
                 </Link>
               </li>

@@ -26,7 +26,7 @@ export function V2Header() {
     <header className="sticky top-0 z-20 border-b border-line bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
         <Link href="/v2" className="mr-auto shrink-0">
-          <Image src="/logo-egaplast.svg" alt="EGAPLAST" width={148} height={48} priority />
+          <Image src="/logo-egaplast.svg" alt="EGAPLAST" width={148} height={48} priority className="h-10 w-auto" />
         </Link>
         <nav aria-label="Principal" className="hidden items-center gap-5 text-sm font-semibold text-navy lg:flex">
           {links.map((link) => (
@@ -141,7 +141,7 @@ export function PageIntro({
           <span className="inline-block h-2.5 w-2.5 rotate-45 bg-orange" aria-hidden="true" />
           {kicker}
         </p>
-        <h1 className="mt-4 max-w-3xl text-4xl font-extrabold tracking-tight text-navy md:text-5xl">{title}</h1>
+        <h1 className="mt-4 max-w-3xl text-3xl font-extrabold tracking-tight text-navy sm:text-4xl md:text-5xl">{title}</h1>
         {lead ? <p className="mt-4 max-w-2xl text-lg leading-8 text-ink">{lead}</p> : null}
       </div>
     </section>
